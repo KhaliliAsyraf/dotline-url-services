@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('shorten_url')->unique();
             $table->text('original_url');
-            $table->text('description');
+            $table->text('description')->nullable();
+            $table->integer('no_of_accessed')->default(0);
             $table->timestamps();
         });
     }

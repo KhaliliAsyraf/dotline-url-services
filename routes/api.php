@@ -19,4 +19,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(
+    [
+        'prefix' => 'url'
+    ],
+    function () {
+        Route::post('/', [URLController::class, 'storeURL'])->name('url.store');
+    }
+);
+
 Route::get('/{url}', [URLController::class, 'redirect'])->name('redirect');

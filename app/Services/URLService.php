@@ -44,11 +44,28 @@ class URLService implements URLInterface
      */
     public function getOriginalURL(string $url): string
     {
-        return '';
+        $this->trackAccessedCountOfURL($url);
+        return URL::whereShortURL($url)->first()->original_url;
     }
-
+    
+    /**
+     * generateShortenURL
+     *
+     * @return string
+     */
     public function generateShortenURL(): string
     {
         return Str::random(6);
+    }
+    
+    /**
+     * To track accessed count of specified URL
+     *
+     * @param  string $url
+     * @return void
+     */
+    public function trackAccessedCountOfURL(string $url): void
+    {
+        URL::whereShortURL($url)->increment('no_of_accessed');
     }
 }

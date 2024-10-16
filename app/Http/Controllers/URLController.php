@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetOriginalURLRequest;
 use App\Http\Requests\StoreURLRequest;
 use App\Interfaces\URLInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class URLController extends BaseController
@@ -13,7 +15,13 @@ class URLController extends BaseController
     {
         //
     }
-    
+        
+    /**
+     * Store URL
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
     public function storeURL(StoreURLRequest $request): JsonResponse
     {
         try {
@@ -29,9 +37,19 @@ class URLController extends BaseController
             return $this->error('Error shorten URL: ' . $e->getMessage());
         }
     }
-
-    public function redirect($url)
-    {
         
+    /**
+     * Redirect to original URL
+     *
+     * @param  Request $url
+     * @return RedirectResponse
+     */
+    public function redirect(GetOriginalURLRequest $request): RedirectResponse|JsonResponse
+    {
+        try {
+            return redirect($this->urlServices->getOriginalURL($request->url));
+        } catch (\Exception $e) {
+            return $this->error('Error shorten URL: ' . $e->getMessage());
+        }
     }
 }

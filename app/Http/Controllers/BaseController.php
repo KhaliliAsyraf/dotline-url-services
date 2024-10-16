@@ -7,13 +7,17 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    public function response(): JsonResponse
+    public function response(array $data): JsonResponse
     {
-        return response()->json();
+        return response()->json($data);
     }
 
-    public function error(): JsonResponse
+    public function error(string $error): JsonResponse
     {
-        return response()->json();
+        return response()->json(
+                [
+                    'error' => $error
+                ]
+            );
     }
 }
