@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Services;
+
+use App\Interfaces\URLInterface;
+use App\Models\URL;
+use Illuminate\Support\Str;
+
+class URLService implements URLInterface
+{
+    /**
+     * To store original URL. Pass the shorten URL
+     *
+     * @param  string $url
+     * @return string
+     */
+    public function storeURL(string $url): string
+    {
+        $shortenURL = $this->generateShortenURL();
+
+        URL::firstOrCreate(
+                [
+                    'shorten_url' => $shortenURL
+                ],
+                [
+                    'shorten_url' => $shortenURL,
+                    'original_url' => $url
+                ]
+            );
+
+        return route(
+                'redirect',
+                [
+                    'url' => $shortenURL
+                ]
+            );
+    }
+        
+    /**
+     * getOriginalURL
+     *
+     * @param  string $url
+     * @return string
+     */
+    public function getOriginalURL(string $url): string
+    {
+        return '';
+    }
+
+    public function generateShortenURL(): string
+    {
+        return Str::random(6);
+    }
+}
