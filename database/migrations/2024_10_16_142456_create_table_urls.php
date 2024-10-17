@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('urls', function (Blueprint $table) {
             $table->id();
             $table->string('shorten_url')->unique();
-            $table->text('original_url');
+            $table->text('original_url')->unique();
             $table->text('description')->nullable();
             $table->integer('no_of_accessed')->default(0);
+            $table->dateTime('expired_date');
             $table->timestamps();
         });
     }

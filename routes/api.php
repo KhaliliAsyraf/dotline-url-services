@@ -24,7 +24,8 @@ Route::group(
         'prefix' => 'url'
     ],
     function () {
-        Route::post('/', [URLController::class, 'storeURL'])->name('url.store');
+        Route::post('/', [URLController::class, 'storeURL'])->middleware('throttle:create-shorten-url')->name('url.store');
+        Route::get('/analytic-data', [URLController::class, 'getAnalyticData'])->name('url.analytic-data');
     }
 );
 

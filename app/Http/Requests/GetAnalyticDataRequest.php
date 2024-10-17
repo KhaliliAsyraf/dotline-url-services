@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class GetOriginalURLRequest extends FormRequest
+class GetAnalyticDataRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class GetOriginalURLRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'url' => $this->url ?? null,
+            'url' => request()->url ?? null,
         ]);
     }
 
@@ -36,7 +36,7 @@ class GetOriginalURLRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'url' => 'required|max:6|min:6|exists:urls,shorten_url'
+            'url' => 'nullable|exists:urls,shorten_url'
         ];
     }
 

@@ -37,4 +37,16 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
     }
+    
+    /**
+     * configureRateLimiting
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('create-shorten-url', function ($request) {
+            return Limit::perMinute(2)->by($request->ip()); // Limit to 2 requests per minute per IP on creating new shorten url
+        });
+    }
 }

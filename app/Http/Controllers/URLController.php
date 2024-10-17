@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetAnalyticDataRequest;
 use App\Http\Requests\GetOriginalURLRequest;
 use App\Http\Requests\StoreURLRequest;
 use App\Interfaces\URLInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class URLController extends BaseController
 {
-    public function __construct(protected URLInterface $urlServices)
+    public function __construct(protected URLInterface $urlInterface)
     {
         //
     }
@@ -25,16 +27,23 @@ class URLController extends BaseController
     public function storeURL(StoreURLRequest $request): JsonResponse
     {
         try {
+            DB::beginTransaction();
+            
+            $shorten_url = $this->urlInterface->storeURL($request->url);
+
+            DB::commit();
+
             return $this->response(
                     [
                         'data' => [
-                            'shorten_url' => $this->urlServices->storeURL($request->url)
+                            'shorten_url' => $shorten_url
                         ],
-                        'message' => 'URL stored and shorten successfully'
+                        'message' => 'URL stored and shorten successfully.'
                     ]
                 );
         } catch (\Exception $e) {
-            return $this->error('Error shorten URL: ' . $e->getMessage());
+            DB::rollBack();
+            return $this->error($e->getMessage());
         }
     }
         
@@ -47,9 +56,29 @@ class URLController extends BaseController
     public function redirect(GetOriginalURLRequest $request): RedirectResponse|JsonResponse
     {
         try {
-            return redirect($this->urlServices->getOriginalURL($request->url));
+            return redirect($this->urlInterface->getOriginalURL($request->url));
         } catch (\Exception $e) {
-            return $this->error('Error shorten URL: ' . $e->getMessage());
+            return $this->error($e->getMessage(), $e->getCode() ? $e->getCode() : 500);
+        }
+    }
+    
+    /**
+     * getAnalyticData
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function getAnalyticData(GetAnalyticDataRequest $request): JsonResponse
+    {
+        try {
+            return $this->response(
+                    [
+                        'data' => $this->urlInterface->getAnalyticData($request?->url),
+                        'message' => 'Success'
+                    ]
+                );
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), $e->getCode() ? $e->getCode() : 500);
         }
     }
 }

@@ -12,12 +12,13 @@ class BaseController extends Controller
         return response()->json($data);
     }
 
-    public function error(string $error): JsonResponse
+    public function error(string $error, int $statusCode = 500): JsonResponse
     {
         return response()->json(
                 [
                     'error' => $error
-                ]
+                ],
+                $statusCode
             );
     }
 }

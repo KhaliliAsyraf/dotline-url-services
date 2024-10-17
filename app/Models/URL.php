@@ -21,4 +21,14 @@ class URL extends Model
     {
         return $query->where('shorten_url', $url);
     }
+    
+    /**
+     * getFullShortenURLAttribute
+     *
+     * @return string
+     */
+    public function getFullShortenURLAttribute(): string
+    {
+        return route('redirect', ['url' => $this->shorten_url]);
+    }
 }
