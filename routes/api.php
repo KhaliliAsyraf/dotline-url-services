@@ -29,4 +29,4 @@ Route::group(
     }
 );
 
-Route::get('/{url}', [URLController::class, 'redirect'])->name('redirect');
+Route::get('/{url}', [URLController::class, 'redirect'])->middleware('user.ip')->name('redirect');

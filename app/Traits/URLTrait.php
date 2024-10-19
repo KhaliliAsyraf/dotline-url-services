@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\URLEnum;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
@@ -20,13 +21,19 @@ trait URLTrait
 
     public function getLocationInfoBasedOnIP(string $ip): string
     {
-        $response = file_get_contents("http://ipinfo.io/{$ip}/json"); // To put on enum
+        $response = file_get_contents(str_replace('{ip}', $ip, URLEnum::IP_INFO_URL->value));
         return $this->concatLocationInfo(json_decode($response, true));
     }
 
     public function concatLocationInfo(array $location = [], string $concatLocation = ''): string
     {
-        $location = Arr::only($location, ['city', 'region', 'country']); // To put on enum
+        $location = Arr::only($location,
+                [
+                    URLEnum::IP_CITY->value,
+                    URLEnum::IP_REGION->value,
+                    URLEnum::IP_COUNTRY->value
+                ]
+            );
         foreach ($location as $key => $info) {
             $key = ucwords($key);
             $concatLocation .= " {$key}: {$info}.";

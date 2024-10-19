@@ -121,7 +121,6 @@ class URLService implements URLInterface
      */
     public function storeAccessedURLTimestamp(int $urlId, $ip): void
     {
-        $ip = '8.8.8.8';
         URLAccessedInfo::create(
                 [
                     'id_urls' => $urlId,

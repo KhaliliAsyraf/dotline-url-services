@@ -46,6 +46,14 @@ class Kernel extends HttpKernel
     ];
 
     /**
+     * Custom route middleware
+     */
+    protected $routeMiddleware = [
+        // Other middlewares
+        'user.ip' => \App\Http\Middleware\GetUserIP::class,
+    ];
+
+    /**
      * The application's middleware aliases.
      *
      * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.

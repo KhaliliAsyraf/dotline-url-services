@@ -57,7 +57,7 @@ class URLController extends BaseController
     {
         try {
             DB::beginTransaction(); // To deal with concurrent access and ensure data consistency
-            $url = $this->urlInterface->getOriginalURL($request->url, request()->ip());
+            $url = $this->urlInterface->getOriginalURL($request->url, $request->ip);
             DB::commit();
             return redirect($url);
         } catch (\Exception $e) {
