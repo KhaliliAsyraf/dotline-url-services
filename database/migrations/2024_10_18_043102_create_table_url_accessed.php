@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('urls', function (Blueprint $table) {
+        Schema::create('url_accessed_infos', function (Blueprint $table) {
             $table->id()->index();
-            $table->string('shorten_url')->unique()->index();
-            $table->text('original_url')->unique()->index();
-            $table->text('description')->nullable()->index();
-            $table->dateTime('expired_date')->index();
+            $table->unsignedBigInteger('id_urls')->index();
+            $table->text('location')->index();
             $table->timestamps();
+
+            $table->foreign('id_urls')->references('id')->on('urls');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('urls');
+        Schema::dropIfExists('url_accessed_infos');
     }
 };

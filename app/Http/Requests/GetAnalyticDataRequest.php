@@ -24,7 +24,7 @@ class GetAnalyticDataRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'url' => request()->url ?? null,
+            'url' => filter_var(request()->url, FILTER_SANITIZE_URL) ?? null,
         ]);
     }
 

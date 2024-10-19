@@ -24,7 +24,7 @@ class GetOriginalURLRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'url' => $this->url ?? null,
+            'url' => filter_var($this->url, FILTER_SANITIZE_URL) ?? null,
         ]);
     }
 

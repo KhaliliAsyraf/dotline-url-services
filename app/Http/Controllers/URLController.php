@@ -27,7 +27,7 @@ class URLController extends BaseController
     public function storeURL(StoreURLRequest $request): JsonResponse
     {
         try {
-            DB::beginTransaction();
+            DB::beginTransaction(); // To deal with concurrent access and ensure data consistency
             
             $shorten_url = $this->urlInterface->storeURL($request->url);
 
@@ -56,8 +56,12 @@ class URLController extends BaseController
     public function redirect(GetOriginalURLRequest $request): RedirectResponse|JsonResponse
     {
         try {
-            return redirect($this->urlInterface->getOriginalURL($request->url));
+            DB::beginTransaction(); // To deal with concurrent access and ensure data consistency
+            $url = $this->urlInterface->getOriginalURL($request->url, request()->ip());
+            DB::commit();
+            return redirect($url);
         } catch (\Exception $e) {
+            DB::rollBack();
             return $this->error($e->getMessage(), $e->getCode() ? $e->getCode() : 500);
         }
     }
