@@ -18,13 +18,26 @@ trait URLTrait
     {
         return Carbon::parse($expiryDate) > Carbon::now();
     }
-
+    
+    /**
+     * getLocationInfoBasedOnIP
+     *
+     * @param  string $ip
+     * @return string
+     */
     public function getLocationInfoBasedOnIP(string $ip): string
     {
         $response = file_get_contents(str_replace('{ip}', $ip, URLEnum::IP_INFO_URL->value));
         return $this->concatLocationInfo(json_decode($response, true));
     }
-
+    
+    /**
+     * concatLocationInfo
+     *
+     * @param  array $location
+     * @param  string $concatLocation
+     * @return string
+     */
     public function concatLocationInfo(array $location = [], string $concatLocation = ''): string
     {
         $location = Arr::only($location,

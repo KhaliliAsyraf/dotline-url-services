@@ -22,6 +22,7 @@ class URLService implements URLInterface
      */
     public function storeURL(string $url): string
     {
+        // Only create new shorten url if original URL don't exist, else return existing shorten url
         $url = URL::firstOrCreate(
                 [
                     'original_url' => $url,
