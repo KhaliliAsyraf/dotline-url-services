@@ -8,6 +8,30 @@
 6. Download and use Postman software, since it is only enpoint request
 7. Enjoy the show :)
 
+## How to use the project?
+
+1. This project only have 3 endpoints:
+
+    1.1. POST - Pass original URL
+
+        1.1.1. Endpoint: {serverURL}/api/url
+
+        1.1.2. Body:
+        {
+            "url": "urlString"
+        }
+
+    1.2. GET - Shorten URL (redirect to original URL)
+
+        1.2.1. Endpoint: {serverURL}/api/<shortenStringRandom> (can be obtain from POST or analytic endpoint)
+
+    1.3 GET - Analytic data
+
+        1.3.1. Endpoint: {serverURL}/api/analytic-data
+        
+        1.3.2. Query string param (optional specified) ?url=<shortenURL>, else return all urls
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
