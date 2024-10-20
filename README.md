@@ -1,3 +1,13 @@
+## How to Setup Project Locally
+
+1. Clone or download project to local machine
+2. Install common dependencies like PHP, composer and etc
+3. Setup .env file with database credential information
+4. Run "composer install"
+5. Run "php artisan key:generate", "php artisan migrate" (1st time)
+6. Download and use Postman software, since it is only enpoint request
+7. Enjoy the show :)
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
