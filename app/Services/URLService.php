@@ -23,6 +23,7 @@ class URLService implements URLInterface
     public function storeURL(string $url): string
     {
         // Only create new shorten url if original URL don't exist, else return existing shorten url
+        // Also checkout rateLimiter middleware setup for the storeUrl endpoint :)
         $url = URL::firstOrCreate(
                 [
                     'original_url' => $url,
@@ -30,12 +31,12 @@ class URLService implements URLInterface
                 [
                     'shorten_url' => $this->generateShortenURL(),
                     'expired_date' => Carbon::now()
-                        ->addDays(URLEnum::URL_VALIDITY->value)
+                        ->addDays(URLEnum::URL_VALIDITY->value) // Using Enum instead of direct hardcoded
                         ->toDateTimeString()
                 ]
             );
 
-        return $url->fullShortenURL;
+        return $url->fullShortenURL; // Using URL attribute
     }
           
     /**
@@ -49,6 +50,7 @@ class URLService implements URLInterface
     {
         $originalURL = URL::whereShortURL($url)->first();
         
+        // $this->verifyURLExpiry() put under URLTrait to make it single responsibility as much as can
         if (!$this->verifyURLExpiry($originalURL->expired_date)) {
             throw new \Exception('URL was already expired!');
         }
@@ -65,10 +67,12 @@ class URLService implements URLInterface
      */
     public function getAnalyticData(?string $url = null): array
     {
+        // Only select certain column for memory optimization
         return URL::select('id', 'shorten_url', 'original_url', 'description')
             ->with(
                 [
                     'accessedURLInfo' => function ($query) {
+                        // Same goes for selecting certain column of eager load data
                         $query->select('id_urls', 'created_at as accessed_at', 'location');
                     }
                 ]
@@ -120,12 +124,12 @@ class URLService implements URLInterface
      * @param  int $urlId
      * @return void
      */
-    public function storeAccessedURLTimestamp(int $urlId, $ip): void
+    public function storeAccessedURLTimestamp(int $urlId, string $ip): void
     {
         URLAccessedInfo::create(
                 [
                     'id_urls' => $urlId,
-                    'location' => $this->getLocationInfoBasedOnIP($ip)
+                    'location' => $this->getLocationInfoBasedOnIP($ip) // Coming from URLTrait
                 ]
             );
     }

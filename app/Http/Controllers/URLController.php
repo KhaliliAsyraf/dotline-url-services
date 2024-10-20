@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class URLController extends BaseController
 {
-    public function __construct(protected URLInterface $urlInterface)
+    public function __construct(protected URLInterface $urlInterface) // Using constructor property promotion
     {
-        //
+        // Using interface class instead of directly using services class. Why?
+        // For integrity disciplinary (depends on flexibility)
+        // How the interface knows it going to which service class?
+        // It already customized based on setup on AppServiceProvider.php to bind the class
     }
         
     /**
@@ -33,7 +36,7 @@ class URLController extends BaseController
 
             DB::commit();
 
-            return $this->response(
+            return $this->response( // Using extend BaseController function
                     [
                         'data' => [
                             'shorten_url' => $shorten_url
@@ -57,6 +60,8 @@ class URLController extends BaseController
     {
         try {
             DB::beginTransaction(); // To deal with concurrent access and ensure data consistency
+
+            // Where $request->ip coming from? From custom GetUserIP middleware
             $url = $this->urlInterface->getOriginalURL($request->url, $request->ip);
             DB::commit();
             return redirect($url);

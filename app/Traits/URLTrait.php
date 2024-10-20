@@ -27,6 +27,7 @@ trait URLTrait
      */
     public function getLocationInfoBasedOnIP(string $ip): string
     {
+        // Using 3rd party services to get location info based on user IP
         $response = file_get_contents(str_replace('{ip}', $ip, URLEnum::IP_INFO_URL->value));
         return $this->concatLocationInfo(json_decode($response, true));
     }
@@ -51,6 +52,6 @@ trait URLTrait
             $key = ucwords($key);
             $concatLocation .= " {$key}: {$info}.";
         }
-        return trim($concatLocation);
+        return trim($concatLocation); // Trim to remove whitespace
     }
 }

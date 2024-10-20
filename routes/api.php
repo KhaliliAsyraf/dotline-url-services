@@ -24,9 +24,11 @@ Route::group(
         'prefix' => 'url'
     ],
     function () {
+        // Custom middleware below to handle limit to 2 requests per minute per IP on creating new shorten url (RouteServiceProvider)
         Route::post('/', [URLController::class, 'storeURL'])->middleware('throttle:create-shorten-url')->name('url.store');
         Route::get('/analytic-data', [URLController::class, 'getAnalyticData'])->name('url.analytic-data');
     }
 );
 
+// Custom middleware below to get user IP address (GetUserIP middleware)
 Route::get('/{url}', [URLController::class, 'redirect'])->middleware('user.ip')->name('redirect');
