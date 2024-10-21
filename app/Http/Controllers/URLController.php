@@ -61,8 +61,8 @@ class URLController extends BaseController
         try {
             DB::beginTransaction(); // To deal with concurrent access and ensure data consistency
 
-            // Where $request->ip coming from? From custom GetUserIP middleware
-            $url = $this->urlInterface->getOriginalURL($request->url, $request->ip);
+            // Where $request->ip & $request->browser coming from? From custom GetUserIP middleware
+            $url = $this->urlInterface->getOriginalURL($request->url, $request->ip, $request->browser);
             DB::commit();
             return redirect($url);
         } catch (\Exception $e) {

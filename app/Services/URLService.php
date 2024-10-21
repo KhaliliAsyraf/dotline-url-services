@@ -44,9 +44,10 @@ class URLService implements URLInterface
      *
      * @param  string $url
      * @param  string $ip
+     * @param  string $browser
      * @return string
      */
-    public function getOriginalURL(string $url, string $ip): string
+    public function getOriginalURL(string $url, string $ip, string $browser): string
     {
         $originalURL = URL::whereShortURL($url)->first();
         
@@ -55,7 +56,7 @@ class URLService implements URLInterface
             throw new \Exception('URL was already expired!');
         }
 
-        $this->storeAccessedURLTimestamp($originalURL->id, $ip); // To store accessed url time
+        $this->storeAccessedURLTimestamp($originalURL->id, $ip, $browser); // To store accessed url time
         return $originalURL->original_url;
     }
     
@@ -73,7 +74,7 @@ class URLService implements URLInterface
                 [
                     'accessedURLInfo' => function ($query) {
                         // Same goes for selecting certain column of eager load data
-                        $query->select('id_urls', 'created_at as accessed_at', 'location');
+                        $query->select('id_urls', 'ip_address', 'created_at as accessed_at', 'location', 'browser');
                     }
                 ]
             )
@@ -91,7 +92,14 @@ class URLService implements URLInterface
                     $url->accessedURLInfo = $url->accessedURLInfo
                         ->transform(
                             function ($info) {
-                                return $info->only(['accessed_at', 'location']);
+                                return $info->only(
+                                    [
+                                        'ip_address',
+                                        'location',
+                                        'browser',
+                                        'accessed_at'
+                                    ]
+                                );
                             }
                         );
                     return $url->only(
@@ -122,14 +130,18 @@ class URLService implements URLInterface
      * To store accessed timestamp of specified URL
      *
      * @param  int $urlId
+     * @param  string $ip
+     * @param  string $browser
      * @return void
      */
-    public function storeAccessedURLTimestamp(int $urlId, string $ip): void
+    public function storeAccessedURLTimestamp(int $urlId, string $ip, string $browser): void
     {
         URLAccessedInfo::create(
                 [
                     'id_urls' => $urlId,
-                    'location' => $this->getLocationInfoBasedOnIP($ip) // Coming from URLTrait
+                    'ip_address' => $ip,
+                    'location' => $this->getLocationInfoBasedOnIP($ip), // Coming from URLTrait
+                    'browser' => $browser
                 ]
             );
     }

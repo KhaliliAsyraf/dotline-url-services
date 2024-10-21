@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('url_accessed_infos', function (Blueprint $table) {
             $table->id()->index();
             $table->unsignedBigInteger('id_urls')->index();
+            $table->string('ip_address')->index();
             $table->text('location')->index();
+            $table->string('browser')->nullable()->index();
             $table->timestamps();
 
             $table->foreign('id_urls')->references('id')->on('urls');

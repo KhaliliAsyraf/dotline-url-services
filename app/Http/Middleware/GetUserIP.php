@@ -21,7 +21,8 @@ class GetUserIP
         // To merge user IP address to request
         request()->merge(
             [
-                'ip' => $ip
+                'ip' => $ip,
+                'browser' => request()->header('User-Agent')
             ]
         );
 
